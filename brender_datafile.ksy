@@ -10,12 +10,6 @@ doc: |
   Argonaut Technologies. Internally, it's known as a "datafile".
   It can contain models, pixelmaps, and actors.
 
-  It was also used by Carmageddon, and possibly Carmageddon 2.
-  Other BRender engine games may also make use of it.
-  I haven't checked many of them.
-
-  Origin of this file: https://github.com/erysdren/Formats
-
 seq:
   - id: chunks
     type: br_datafile_chunk_t
