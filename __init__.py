@@ -222,7 +222,7 @@ class ExportBRender(bpy.types.Operator, ExportHelper):
 		duration = time.time()
 
 		out_model = BRenderLib(self.properties.filepath)
-		out_model.OpenDataFile(BR_FILE_MODELS)
+		out_model.OpenDataFile(BR_FILE_MODELS_B)
 
 		for i, object in enumerate(context.scene.objects):
 			mesh = object.to_mesh()
