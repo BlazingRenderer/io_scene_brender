@@ -4,9 +4,12 @@
 # imports
 import os, sys, struct
 import bpy, bmesh
-import brender as Br
 from bpy_extras.io_utils import ExportHelper, ImportHelper
 from bpy.props import StringProperty, CollectionProperty, BoolProperty, EnumProperty
+
+# for brender import
+sys.path.append(os.path.dirname(__file__))
+import brender as Br
 
 # bl_info
 bl_info = {
@@ -74,6 +77,7 @@ def register():
 
 	# init brender
 	Br.Begin(lib)
+	print("io_scene_brender: BRender successfully initialized.")
 
 def unregister():
 	bpy.utils.unregister_class(ExportBRender)
@@ -83,6 +87,7 @@ def unregister():
 
 	# close brender
 	Br.End()
+	print("io_scene_brender: BRender successfully shutdown.")
 
 if __name__ == "__main__":
 	register()
@@ -95,25 +100,30 @@ class ImportBRender(bpy.types.Operator, ImportHelper):
 	"""Import a BRender Model (.dat) File"""
 	bl_idname = "import.brender_dat"
 	bl_label = "Import BRender Model (.dat)"
-	bl_options = {'UNDO'}
+	bl_options = {"UNDO"}
 
 	# hidden properties
-	filepath : StringProperty(name="File Path", description="Filepath used for importing the DAT file", maxlen=1024, default="", options={'HIDDEN'})
-	files : CollectionProperty(type=bpy.types.OperatorFileListElement, options={'HIDDEN'})
-	directory : StringProperty(maxlen=1024, default="", subtype='FILE_PATH', options={'HIDDEN'})
-	filter_folder : BoolProperty(name="Filter Folders", description="", default=True, options={'HIDDEN'})
-	filter_glob : StringProperty(default="*.dat;*.DAT", options={'HIDDEN'})
+	filepath : StringProperty(name="File Path", description="Filepath used for importing the DAT file", maxlen=1024, default="", options={"HIDDEN"})
+	files : CollectionProperty(type=bpy.types.OperatorFileListElement, options={"HIDDEN"})
+	directory : StringProperty(maxlen=1024, default="", subtype="FILE_PATH", options={"HIDDEN"})
+	filter_folder : BoolProperty(name="Filter Folders", description="", default=True, options={"HIDDEN"})
+	filter_glob : StringProperty(default="*.dat;*.DAT", options={"HIDDEN"})
 
 	def execute(self, context):
 
-		print(f"importing {self.filepath}")
-
+		# load with BRender
 		mdl = Br.ModelLoad(self.filepath)
 		if mdl == None:
-			print(f"failed to import {self.filepath}")
-		else:
-			print(f"successfully imported {self.filepath}")
-			Br.ModelFree(mdl)
+			print(f"io_scene_brender: Failed to load \"{self.filepath}\"")
+			return {"CANCELLED"}
+
+		print(f"io_scene_brender: Successfully loaded \"{self.filepath}\"")
+
+		vertices = []
+		faces = []
+		uvs = []
+
+		Br.ModelFree(mdl)
 
 		return {"FINISHED"}
 
