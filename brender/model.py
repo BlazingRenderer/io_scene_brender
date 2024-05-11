@@ -47,7 +47,7 @@ class vertex(Structure):
 # face
 class face(Structure):
 	_fields_ = [
-		("vertices", c_ushort),
+		("vertices", c_ushort * 3),
 		("smoothing", c_ushort),
 		("material", POINTER(material)),
 		("index", c_ubyte),

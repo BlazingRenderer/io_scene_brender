@@ -42,7 +42,7 @@ def add_object(name, mesh):
 	return obj
 
 def link_object(obj):
-	scene.collection.objects.link(obj)
+	bpy.context.scene.collection.objects.link(obj)
 
 def write_material(name):
 	mat = bpy.data.materials.new(name)
@@ -112,18 +112,50 @@ class ImportBRender(bpy.types.Operator, ImportHelper):
 	def execute(self, context):
 
 		# load with BRender
-		mdl = Br.ModelLoad(self.filepath)
-		if mdl == None:
+		model = Br.ModelLoad(self.filepath)
+		if model == None:
 			print(f"io_scene_brender: Failed to load \"{self.filepath}\"")
 			return {"CANCELLED"}
 
 		print(f"io_scene_brender: Successfully loaded \"{self.filepath}\"")
 
+		# setup arrays
 		vertices = []
 		faces = []
 		uvs = []
+		edges = []
+		assignments = []
 
-		Br.ModelFree(mdl)
+		# start parsing model data
+		identifier = model.contents.identifier.decode("ascii")
+
+		# reel in vertices and uvs
+		for i in range(0, model.contents.nvertices):
+			vertices.append([model.contents.vertices[i].p.x, model.contents.vertices[i].p.y, model.contents.vertices[i].p.z])
+			uvs.append([model.contents.vertices[i].map.x, model.contents.vertices[i].map.y])
+
+		# reel in faces
+		for i in range(0, model.contents.nfaces):
+			faces.append([model.contents.faces[i].vertices[0],
+				 model.contents.faces[i].vertices[1],
+				 model.contents.faces[i].vertices[2]])
+
+		# create mesh
+		mesh = add_mesh(identifier, vertices, edges, faces)
+
+		# add uvs to mesh
+		for poly in mesh.polygons:
+			for loop_index in poly.loop_indices:
+				mesh.uv_layers.active.data[loop_index].uv = uvs[mesh.loops[loop_index].vertex_index]
+
+		# create object
+		obj = add_object(identifier, mesh)
+
+		# link object
+		link_object(obj)
+
+		# free model
+		Br.ModelFree(model)
 
 		return {"FINISHED"}
 
