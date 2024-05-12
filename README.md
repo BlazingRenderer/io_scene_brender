@@ -3,6 +3,10 @@
 This is a plugin for Blender that allows you to import and export standard BRender
 models. It makes use of [Kaitai Struct](https://kaitai.io/) for the import process.
 
+NOTE: Currently being rewritten with [PyBRender](https://github.com/BlazingRenderer/PyBRender).
+Please check the [`rewrite`](https://github.com/BlazingRenderer/io_scene_brender/tree/rewrite)
+branch for more information.
+
 ## Notes
 
 - Material import & export is limited
