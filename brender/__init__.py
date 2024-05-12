@@ -63,7 +63,7 @@ def CSTR(s): return c_char_p(s.encode('ascii'))
 def Begin(libname="brender"):
 	global __BrLib
 	if __BrLib != None:
-		raise Exception("BRender already started")
+		return
 	__BrLib = CDLL(libname)
 	__BrLib.BrV1dbBeginWrapper()
 
@@ -73,10 +73,12 @@ def Begin(libname="brender"):
 	__BrLib.BrModelFindHook(__BrLib.BrModelFindFailedLoad)
 	__BrLib.BrMaterialFindHook(__BrLib.BrMaterialFindFailedLoad)
 
+
 def End():
 	global __BrLib
-	if __BrLib != None:
-		__BrLib.BrV1dbEndWrapper()
+	if __BrLib == None:
+		return
+	__BrLib.BrV1dbEndWrapper()
 	__BrLib = None
 
 ####################################################
