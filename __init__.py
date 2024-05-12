@@ -15,7 +15,7 @@ import brender as Br
 bl_info = {
 	"name": "BRender (DAT) format",
 	"author": "erysdren (it/she/they)",
-	"version": (1, 0, 0),
+	"version": (0, 1, 0),
 	"blender": (4, 1, 0),
 	"location": "File > Export, File > Import",
 	"description": "BRender model import and export",
@@ -44,7 +44,7 @@ def add_object(name, mesh):
 def link_object(obj):
 	bpy.context.scene.collection.objects.link(obj)
 
-def write_material(name):
+def add_material(name):
 	mat = bpy.data.materials.new(name)
 	mat.use_nodes = True
 	bsdf = mat.node_tree.nodes["Principled BSDF"]
@@ -134,7 +134,7 @@ class ImportBRender(bpy.types.Operator, ImportHelper):
 			vertices.append([model.contents.vertices[i].p.x, model.contents.vertices[i].p.y, model.contents.vertices[i].p.z])
 			uvs.append([model.contents.vertices[i].map.x, model.contents.vertices[i].map.y])
 
-		# reel in faces
+		# reel in faces and materials
 		for i in range(0, model.contents.nfaces):
 			faces.append([model.contents.faces[i].vertices[0],
 				 model.contents.faces[i].vertices[1],
@@ -150,6 +150,8 @@ class ImportBRender(bpy.types.Operator, ImportHelper):
 
 		# create object
 		obj = add_object(identifier, mesh)
+
+		# add material assignments to object
 
 		# link object
 		link_object(obj)
