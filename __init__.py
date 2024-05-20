@@ -174,4 +174,49 @@ class ExportBRender(bpy.types.Operator, ExportHelper):
 	filter_glob: StringProperty(default="*.dat", options={"HIDDEN"})
 
 	def execute(self, context):
+
+		# each object in the scene is a discrete model in the datafile
+		for i, obj in enumerate(context.scene.objects):
+			mesh = obj.to_mesh()
+
+			# triangulate mesh
+			bm = bmesh.new()
+			bm.from_mesh(mesh)
+			bmesh.ops.triangulate(bm, faces=bm.faces)
+			bm.to_mesh(mesh)
+			bm.free
+
+			# allocate brender model
+			model = Br.ModelAllocate(mesh.name, len(mesh.vertices), len(mesh.polygons))
+
+			uv_array = [None] * len(mesh.vertices)
+
+			# write in faces and fetch uvs
+			for p, poly in enumerate(mesh.polygons):
+				i = 0
+				for vert_idx, loop_idx in zip(poly.vertices, poly.loop_indices):
+
+					# save uv coords
+					uv_coords = mesh.uv_layers.active.data[loop_idx].uv
+					uv_array[vert_idx] = [uv_coords.x, uv_coords.y]
+
+					# add vertex idx
+					model.contents.faces[p].vertices[i] = vert_idx
+					i += 1
+
+			# write in vertices
+			for v, vert in enumerate(mesh.vertices):
+				coords = obj.matrix_world @ vert.co
+				model.contents.vertices[v].p.x = coords[0]
+				model.contents.vertices[v].p.y = coords[1]
+				model.contents.vertices[v].p.z = coords[2]
+				model.contents.vertices[v].map.x = uv_array[v][0]
+				model.contents.vertices[v].map.y = uv_array[v][1]
+
+			# save model to disk
+			Br.ModelSave(self.filepath, model)
+
+			# free model
+			Br.ModelFree(model)
+
 		return {"FINISHED"}
