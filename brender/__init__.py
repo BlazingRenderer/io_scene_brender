@@ -118,6 +118,12 @@ def PixelmapSave(filename, pm):
 	__BrLib.BrPixelmapSave.restype = c_uint
 	return __BrLib.BrPixelmapSave(CSTR(filename), pm)
 
+# save many
+def PixelmapSaveMany(filename, pixelmaps, num):
+	__BrLib.BrPixelmapSaveMany.argtypes = [c_char_p, POINTER(POINTER(pixelmap)), c_ushort]
+	__BrLib.BrPixelmapSaveMany.restype = c_uint
+	return __BrLib.BrPixelmapSaveMany(CSTR(filename), pixelmaps, num)
+
 # load
 def PixelmapLoad(filename):
 	__BrLib.BrPixelmapLoad.argtypes = [c_char_p]
@@ -147,6 +153,12 @@ def ModelSave(filename, m):
 	__BrLib.BrModelSave.restype = c_uint
 	return __BrLib.BrModelSave(CSTR(filename), m)
 
+# save many
+def ModelSaveMany(filename, models, num):
+	__BrLib.BrModelSaveMany.argtypes = [c_char_p, POINTER(POINTER(model)), c_ushort]
+	__BrLib.BrModelSaveMany.restype = c_uint
+	return __BrLib.BrModelSaveMany(CSTR(filename), models, num)
+
 # load
 def ModelLoad(filename):
 	__BrLib.BrModelLoad.argtypes = [c_char_p]
@@ -169,6 +181,12 @@ def MaterialAllocate(name):
 def MaterialFree(m):
 	__BrLib.BrMaterialFree.argtypes = [POINTER(material)]
 	__BrLib.BrMaterialFree(m)
+
+# save many
+def MaterialSaveMany(filename, materials, num):
+	__BrLib.BrMaterialSaveMany.argtypes = [c_char_p, POINTER(POINTER(material)), c_ushort]
+	__BrLib.BrMaterialSaveMany.restype = c_uint
+	return __BrLib.BrMaterialSaveMany(CSTR(filename), materials, num)
 
 # save
 def MaterialSave(filename, m):
