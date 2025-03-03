@@ -16,7 +16,7 @@ branch for more information.
 
 MIT License
 
-Copyright (c) 2024 erysdren (it/they/she)
+Copyright (c) 2024-2025 erysdren (it/its)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
