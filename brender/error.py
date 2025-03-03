@@ -5,7 +5,7 @@
 MIT License
 
 Copyright (c) 1992-1998 Argonaut Technologies Limited
-Copyright (c) 2014-2024 Zane van Iperen, erysdren
+Copyright (c) 2014-2025 Zane van Iperen, erysdren
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
